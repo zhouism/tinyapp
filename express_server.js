@@ -10,8 +10,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
-  
+  "9sm5xK": "http://www.google.com"
 };
 
 
@@ -46,20 +45,21 @@ app.get("/urls/:id", (req, res) => {
     res.render("urls_show", templateVars);
   });
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
-});
-
 app.post("/urls", (req, res) => {
     let shortURL = generateRandomString(6);
     urlDatabase[shortURL] = req.body.longURL;
-    res.redirect(`http://localhost:8080/urls/${shortURL}`)
+    res.redirect('/urls')
   });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = 
-  res.redirect(longURL);
+    let shortURL = req.params.shortURL;
+    let longURL = urlDatabase[shortURL];
+    res.redirect(longURL);
 });
+
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}!`);
+  });
 
 function generateRandomString(keyLength) {
   var i, key = "", characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
