@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/zhouism/tinyapp#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
     "ejs-lint": "^0.3.0",
     "express": "^4.16.3"
