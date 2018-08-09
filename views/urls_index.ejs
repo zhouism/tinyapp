@@ -12,20 +12,13 @@
     <ul>
         <% for(var url in urls) { %>
         <li><%= url %> - <%= urls[url] %> 
+            <a href= "/urls/<%= url %>" >Edit</a>
         </form>
         <form action='/urls/<%= url %>/delete' method='POST'>
           <button type='submit' class='btn btn-danger'>Delete</button>
         </form>
         <% } %>
     </ul>
-    <!-- </form>
-    <form method= "POST" action="/urls/<%= url %>/delete"></form>
-    <h2>Delete a URL</h2>
-    <label for="url">Enter URL: </label>
-    <input id="url" type="text" name="name_field" value="<%= url %>">
-    <button type='submit' class='btn btn-danger'>Delete</button>
-    </div>
-    </form>  -->
     <a href='#'></a>
 </body>
 </html>

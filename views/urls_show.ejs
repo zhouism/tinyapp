@@ -9,5 +9,12 @@
 <body>
     <%= shortURL %>
     <%= urls[shortURL] %>
+    </form>
+      <form action='/urls/<%= shortURL %>' method='POST'>
+        <h2>Update the URL</h2>
+          <label for="url">Enter URL: </label>
+          <input id="url" type="text" name="new_url" placeholder="http://">
+        <button type='submit' class='btn btn-danger'>Update URL</button>
+    </form> 
 </body>
 </html>
