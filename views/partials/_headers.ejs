@@ -1,5 +1,17 @@
 <html lang="en">
 <head>
-  Welcome to Tiny App  
+    <% if( username ){ %>
+      <h1>Welcome to Tiny App, <%= username %> !</h1>
+      <form action="/logout" method="POST">
+        <input type="submit" class="btn btn-dark" value="logout">
+      </form>
+    <% } else { %>  
+    </form>
+    <form action="/login" method='POST'>
+      <label for="username">Enter username: </label>
+        <input id="username" type="text" name="username" placeholder="Username">
+      <button type='submit' class='btn btn-primary'>Sign in</button>
+  </form> 
+   <% } %>   
 </head>
 </html>

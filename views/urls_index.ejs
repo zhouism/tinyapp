@@ -1,4 +1,4 @@
-<!-- views/partials/_headers.ejs -->
+<%- include partials/_headers.ejs %>
 
 <!DOCTYPE html>
 
@@ -15,7 +15,7 @@
             <a href= "/urls/<%= url %>" >Edit</a>
         </form>
         <form action='/urls/<%= url %>/delete' method='POST'>
-          <button type='submit' class='btn btn-danger'>Delete</button>
+          <button type='submit' class='btn btn-success'>Delete</button>
         </form>
         <% } %>
     </ul>
