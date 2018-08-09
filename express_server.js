@@ -1,6 +1,6 @@
 var express = require("express");
 var app = express();
-var PORT = 8080; // default port 8080
+var PORT = 8080; 
 
 app.set("view engine", "ejs");
 
@@ -15,8 +15,25 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = { 
+  "julia": {
+    id: "julia", 
+    email: "julia@email.com", 
+    password: "password"
+  },
+ "marc": {
+    id: "marc", 
+    email: "marc@email.com", 
+    password: "password"
+  }
+}
+
 app.get("/", (req, res) => {
   res.end("Hello!");
+});
+
+app.get("/register", (req, res) => {
+  res.render("register")
 });
 
 app.get("/urls.json", (req, res) => {
@@ -27,25 +44,34 @@ app.get("/urls", (req, res) => {
   let templateVars = { 
     urls: urlDatabase, 
     username: req.cookies['userid']};
-  // console.log('req.cookies' + JSON.stringify(req.cookies)) => {"userid":"juliazhou"}
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  console.log(req.cookies['userid']) //=> juliazhou
   let templateVars = { 
     username: req.cookies['userid']};
-  console.log("templatevars" + templateVars.username)
-  res.render("urls_new", templateVars); // Path must be a string. Received { username: 'juliazhou' }
-  //console.log(templateVars) // => { username: 'juliazhou', _locals: {} }
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { 
     shortURL: req.params.id, 
     username: req.cookies['userid'], 
-    urls: urlDatabase }; //refector: only send the url neeed from the database
+    urls: urlDatabase }; //refactor: only send the url neeed from the database
   res.render("urls_show", templateVars);
+});
+
+app.post("/register", (req, res) => {
+  let randomID = generateRandomString(5);
+  let userInfo = {
+    id: randomID,
+    email: req.body.email[0],
+    password:req.body.email[1],
+  };
+  users[randomID] = userInfo;
+  console.log(users)
+  res.cookie("userid", randomID)
+  res.redirect("/urls");
 });
 
 app.post("/urls", (req, res) => {
