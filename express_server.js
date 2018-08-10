@@ -36,42 +36,72 @@ app.get("/register", (req, res) => {
   res.render("register")
 });
 
+app.get("/login", (req, res) => {
+  res.render("login")
+})
+
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
 app.get("/urls", (req, res) => {
+  let userID = req.cookies['userid'];
   let templateVars = { 
     urls: urlDatabase, 
-    username: req.cookies['userid']};
+    username: users[userID]};
+    console.log(users[userID])
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
+  let userID = req.cookies['userid'];
   let templateVars = { 
-    username: req.cookies['userid']};
+    username: users[userID]};
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
+  let userID = req.cookies['userid'];
   let templateVars = { 
     shortURL: req.params.id, 
-    username: req.cookies['userid'], 
+    username: users[userID], 
     urls: urlDatabase }; //refactor: only send the url neeed from the database
-  res.render("urls_show", templateVars);
+    res.render("urls_show", templateVars);
 });
 
 app.post("/register", (req, res) => {
   let randomID = generateRandomString(5);
   let userInfo = {
     id: randomID,
-    email: req.body.email[0],
-    password:req.body.email[1],
+    email: req.body.email,
+    password:req.body.password,
   };
+  // checks if email is already in user database
+ for (let user in users){
+   if (userInfo.email === users[user]['email']){
+      res.end("This email already exists!");
+      return;
+    } 
+    };
   users[randomID] = userInfo;
-  console.log(users)
   res.cookie("userid", randomID)
   res.redirect("/urls");
+});
+
+app.post("/login", (req, res) => {
+  let userInfo = {
+    email: req.body.email,
+    password:req.body.password,
+  };
+  // checks if email is already in user database
+ for (let user in users){
+   if (userInfo.email === users[user]['email'] && 
+    userInfo.password === users[user]['password']){
+    res.cookie("userid", users[user]['id'])
+    res.redirect("/urls");
+    } 
+    };
+  res.redirect("/login");
 });
 
 app.post("/urls", (req, res) => {
@@ -90,12 +120,6 @@ app.post("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   let newLongURL = req.body.new_url;
   urlDatabase[shortURL] = newLongURL;
-  res.redirect("/urls");
-});
-
-app.post("/login", (req, res) => {
-  let name = req.body.username;
-  res.cookie("userid", name);
   res.redirect("/urls");
 });
 
