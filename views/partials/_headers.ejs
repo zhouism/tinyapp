@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <% if( username ){ %>
-      <h1>Welcome to Tiny App, <%= username %> !</h1>
+      <h1>Welcome to Tiny App, <%= username['email'] %> !</h1>
       <form action="/logout" method="POST">
         <input type="submit" class="btn btn-dark" value="Logout">
       </form>

@@ -7,8 +7,8 @@
   <title>TinyApp</title>
 </head>
 <body>
-    <%= shortURL %>
-    <%= urls[shortURL] %>
+    <%= shortURL %> - 
+    <%= longURL %>
     </form>
       <form action='/urls/<%= shortURL %>' method='POST'>
         <h2>Update the URL</h2>
