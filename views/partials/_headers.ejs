@@ -7,8 +7,10 @@
       </form>
     <% } else { %>  
       <h1>Welcome to Tiny App!</h1>
-      <a href="/login">Login</a>
-      <a href="/register">Register</a>
+    </form>
+    <form action="/login" method='GET'>
+        <button type='submit' name= 'edit' class='btn btn-success'>Login</button>
+    </form>
    <% } %>   
 </head>
 </html>

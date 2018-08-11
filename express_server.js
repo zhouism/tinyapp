@@ -29,6 +29,11 @@ const userChecker = (currentUser) => {
   } return false;
 };
 
+function badLogin(req, res) {
+  req.session.errMessage = "You provided invalid credentials.";
+  res.redirect('/login');
+}
+
 var urlDatabase = {
   "b2xVn2": {
     id: "julia",
@@ -55,14 +60,25 @@ var users = {
 }
 
 app.get("/", (req, res) => {
+  if (req.session.userid) {
+    res.redirect("/urls")
+  } else
   res.redirect("/login");
 });
 
 app.get("/register", (req, res) => {
+  let userID = req.session.userid;
+  if (userChecker(userID)) {
+    res.redirect("/urls")
+  };
   res.render("register")
 });
 
 app.get("/login", (req, res) => {
+  let userID = req.session.userid;
+  if (userChecker(userID)) {
+    res.redirect("/urls")
+  };
   res.render("login")
 })
 
@@ -115,7 +131,7 @@ app.get("/urls/new", (req, res) => {
     };
     res.render('urls_new', templateVars);
   } else {
-    res.status(401).send('Error: 401: You are not authorized, Please <a href="/"> Login </a>');
+    res.redirect('/login')
   }
 });
 
@@ -123,6 +139,12 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let userID = req.session['userid'];
   let key = req.params['id']
+  if (!userChecker(userID)) {
+    res.status(403).send('Please login first.')
+  };
+  if (userID !== urlDatabase[key]['id']){
+    res.status(403).send('You do not have permissions to edit this.')
+  }
   let templateVars = { 
     username: users[userID],
     shortURL: key, 
@@ -165,9 +187,10 @@ app.post("/login", (req, res) => {
       bcrypt.compareSync(userInfo.password, users[user]['password'])){
       req.session.userid = users[user]['id']
       res.redirect("/urls");
+      } else {
+        badLogin(req, res)
       } 
-      };
-  res.redirect("/login");
+    };
 });
 
 // GENERATE NEW SHORT URL
@@ -186,7 +209,7 @@ app.post("/urls", (req, res) => {
 
 // DELETE URLS OWNED BY USER
 app.post("/urls/:id/delete",(req, res) => {
-  let userID = req.cookies.userid;
+  let userID = req.session.userid;
   let shortURL = req.params.id;
   if (userChecker(userID)) {
     delete urlDatabase[shortURL];
@@ -196,7 +219,7 @@ app.post("/urls/:id/delete",(req, res) => {
   }
 });
 
-
+//GIVES URL OWNERS ABILITY TO EDIT AND DELETE
 app.post("/urls/:id", (req, res) => {
   let userID = req.session['userid'];
   let shortURL = req.params.id;
@@ -207,7 +230,6 @@ app.post("/urls/:id", (req, res) => {
 
 app.post("/logout", (req, res) => {
   req.session.userid = null;
-  // res.clearCookie("userid");
   res.redirect("/");
 });
 
