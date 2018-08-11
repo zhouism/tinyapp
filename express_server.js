@@ -37,12 +37,12 @@ var users = {
   "julia": {
     id: "julia", 
     email: "julia@email.com", 
-    password: "password"
-  },
- "marc": {
+    password: bcrypt.hashSync('password', 10)}
+  ,
+   "marc": {
     id: "marc", 
     email: "marc@email.com", 
-    password: "password"
+    password: bcrypt.hashSync('password', 10)
   }
 }
 
@@ -90,7 +90,6 @@ app.get("/urls", (req, res) => {
   }
 });
 
-//NEW URL NEEDS TO BE PUSHED TO DATABASE
 app.get("/urls/new", (req, res) => {
   let userID = req.cookies['userid'];
   if (userChecker(userID)) {
@@ -109,11 +108,6 @@ app.get("/urls/new", (req, res) => {
   } else {
     res.status(401).send('Error: 401: You are not authorized, Please <a href="/"> Login </a>');
   }
-
-  // let templateVars = {
-  //   username: users[userID],
-  // };
-  // res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -131,7 +125,7 @@ app.post("/register", (req, res) => {
   let userInfo = {
     id: randomID,
     email: req.body.email,
-    password:req.body.password,
+    password: bcrypt.hashSync(req.body.password, 10)
   };
   // checks if email is already in user database
  for (let user in users){
@@ -153,7 +147,6 @@ app.post("/login", (req, res) => {
   // checks if email is already in user database
  for (let user in users){
    if (userInfo.email === users[user]['email'] && 
-   //NEEDS TO HASH PASSWORDS
     bcrypt.compare(userInfo.password, users[user]['password'])){
     res.cookie("userid", users[user]['id'])
     res.redirect("/urls");
