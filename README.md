@@ -4,8 +4,8 @@ TinyApp is a full stack web application build with Node and Express that allows 
 
 ## Final Product
 
-!["Home page"] (https://github.com/zhouism/tinyapp/blob/master/docs/register-page.png?raw=true)
-!["URL shortening page"] (https://github.com/zhouism/tinyapp/blob/master/docs/urls-page.png?raw=true)
+!["Home page"](https://github.com/zhouism/tinyapp/blob/master/docs/register-page.png?raw=true)
+!["URL shortening page"](https://github.com/zhouism/tinyapp/blob/master/docs/urls-page.png?raw=true)
 
 ## Dependencies
 
