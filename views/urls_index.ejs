@@ -13,9 +13,10 @@
     <ul>
         <% for(let match of urlMatches) { %>
             <li><%= match['shortURL'] %> - <%= match['longURL'] %> 
-            </form>
+           
             <form action='/urls/<%= match['shortURL'] %>' method='GET'>
                 <button type='submit' name= 'edit' class='btn btn-success'>Edit</button>
+            </form>
             <form action='/urls/<%= match['shortURL'] %>/delete' method='POST'>
                 <button type='submit' name= 'delete' class='btn btn-success'>Delete</button>
             </form>
