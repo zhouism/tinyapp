@@ -29,10 +29,6 @@ const userChecker = (currentUser) => {
   } return false;
 };
 
-function badLogin(req, res) {
-  req.session.errMessage = "You provided invalid credentials.";
-  res.redirect('/login');
-}
 
 var urlDatabase = {
   "b2xVn2": {
@@ -169,11 +165,11 @@ app.post("/register", (req, res) => {
   }
   
   // add new ID to to database
+  
   users[newRandomID] = userInfo;
   req.session.userid = newRandomID;
   res.redirect("/urls");
 });
-
 
 // LOGIN WITH EXISTING EMAIL AND PASSWORD
 app.post("/login", (req, res) => {
@@ -184,13 +180,13 @@ app.post("/login", (req, res) => {
   // checks if email and password match with database
   for (let user in users){
     if (userInfo.email === users[user]['email'] && 
-      bcrypt.compareSync(userInfo.password, users[user]['password'])){
+    bcrypt.compareSync(userInfo.password, users[user]['password'])){
       req.session.userid = users[user]['id']
       res.redirect("/urls");
-      } else {
-        badLogin(req, res)
-      } 
-    };
+      return;
+      }     
+  }
+  res.status(403).send('Your login information is not correct');
 });
 
 // GENERATE NEW SHORT URL
@@ -236,11 +232,12 @@ app.post("/logout", (req, res) => {
 // REDIRECTS TO LONG URL
 app.get("/u/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
-  let longURL = urlDatabase[shortURL].longURL;
-  if(!urlDatabase[shortURL]) {
+  if (shortURL in urlDatabase) {
+    let longURL = urlDatabase[shortURL].longURL;
+    res.redirect(longURL);
+  } else {
     res.status(404).send('Error: 404: Page not found. <a href="/"> Go Back </a>');
   }
-  res.redirect(longURL);
 });
 
 app.listen(PORT, () => {
