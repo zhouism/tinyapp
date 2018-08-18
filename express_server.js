@@ -58,6 +58,7 @@ var users = {
 app.get("/", (req, res) => {
   if (req.session.userid) {
     res.redirect("/urls")
+    return;
   } else
   res.redirect("/login");
 });
@@ -66,6 +67,7 @@ app.get("/register", (req, res) => {
   let userID = req.session.userid;
   if (userChecker(userID)) {
     res.redirect("/urls")
+    return;
   };
   res.render("register")
 });
@@ -74,6 +76,7 @@ app.get("/login", (req, res) => {
   let userID = req.session.userid;
   if (userChecker(userID)) {
     res.redirect("/urls")
+    return;
   };
   res.render("login")
 })
@@ -86,7 +89,8 @@ app.get("/urls.json", (req, res) => {
 app.get("/urls", (req, res) => {
   let userID = req.session.userid;
   if (userID === undefined) {
-    res.redirect("/login")
+    res.redirect("/login");
+    return;
   } 
 
   if (userID) {
@@ -104,6 +108,7 @@ app.get("/urls", (req, res) => {
       } 
     } 
     res.render("urls_index", templateVars);
+    return;
 
   } else {
     res.redirect("/urls/new")
@@ -126,6 +131,8 @@ app.get("/urls/new", (req, res) => {
       username: userID
     };
     res.render('urls_new', templateVars);
+    return;
+
   } else {
     res.redirect('/login')
   }
@@ -137,9 +144,12 @@ app.get("/urls/:id", (req, res) => {
   let key = req.params['id']
   if (!userChecker(userID)) {
     res.status(403).send('Please login first.')
+    return;
+
   };
   if (userID !== urlDatabase[key]['id']){
     res.status(403).send('You do not have permissions to edit this.')
+    return;
   }
   let templateVars = { 
     username: users[userID],
@@ -210,6 +220,7 @@ app.post("/urls/:id/delete",(req, res) => {
   if (userChecker(userID)) {
     delete urlDatabase[shortURL];
     res.redirect('/urls');
+    return;
   } else {
     res.status(403).send('403: You do not have permissions to delete this.');
   }
@@ -235,6 +246,7 @@ app.get("/u/:shortURL", (req, res) => {
   if (shortURL in urlDatabase) {
     let longURL = urlDatabase[shortURL].longURL;
     res.redirect(longURL);
+    return;
   } else {
     res.status(404).send('Error: 404: Page not found. <a href="/"> Go Back </a>');
   }
